@@ -261,6 +261,13 @@ def solve_maze(start, end):
 
         else:
             stack.pop()
+        # ---------------- DEAD END MARKER ---------------- #
+dead_t = turtle.Turtle()
+dead_t.shape("square")
+dead_t.color("blue")
+dead_t.penup()
+dead_t.speed(0)
+dead_t.shapesize(0.6)
         
 
 
