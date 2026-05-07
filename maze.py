@@ -86,3 +86,9 @@ def draw_maze():
             x,
             y - CELL_SIZE
         )
+        # ---------------- GENERATOR MOUSE ---------------- #
+gen_mouse = turtle.Turtle()
+gen_mouse.shape("circle")
+gen_mouse.color("orange")
+gen_mouse.penup()
+gen_mouse.speed(0)
