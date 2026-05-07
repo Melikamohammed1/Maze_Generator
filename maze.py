@@ -92,3 +92,74 @@ gen_mouse.shape("circle")
 gen_mouse.color("orange")
 gen_mouse.penup()
 gen_mouse.speed(0)
+# ---------------- REMOVE WALL ---------------- #
+def remove_wall(r, c, nr, nc, direction):
+
+    if direction == "N":
+        northWall[r][c] = 0
+
+    elif direction == "S":
+        northWall[nr][nc] = 0
+
+    elif direction == "E":
+        eastWall[r][c] = 0
+
+    elif direction == "W":
+        eastWall[nr][nc] = 0
+
+
+# ---------------- GENERATE MAZE ---------------- #
+def generate_maze():
+
+    stack = []
+
+    r = random.randint(0, ROWS - 1)
+    c = random.randint(0, COLS - 1)
+
+    visited[r][c] = True
+    stack.append((r, c))
+
+    while stack:
+
+        r, c = stack[-1]
+
+        # Move mouse
+        x, y = cell_to_screen(r, c)
+
+        gen_mouse.goto(
+            x + CELL_SIZE / 2,
+            y - CELL_SIZE / 2
+        )
+
+        neighbors = []
+
+        # North
+        if r > 0 and not visited[r - 1][c]:
+            neighbors.append((r - 1, c, "N"))
+
+        # South
+        if r < ROWS - 1 and not visited[r + 1][c]:
+            neighbors.append((r + 1, c, "S"))
+
+        # West
+        if c > 0 and not visited[r][c - 1]:
+            neighbors.append((r, c - 1, "W"))
+
+        # East
+        if c < COLS - 1 and not visited[r][c + 1]:
+            neighbors.append((r, c + 1, "E"))
+
+        if neighbors:
+
+            nr, nc, direction = random.choice(neighbors)
+
+            remove_wall(r, c, nr, nc, direction)
+
+            visited[nr][nc] = True
+            stack.append((nr, nc))
+
+        else:
+            stack.pop()
+
+        generate_maze()
+        time.sleep(0.01)
