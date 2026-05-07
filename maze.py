@@ -173,6 +173,12 @@ draw_maze()
 wn.update()
 
 turtle.done()
+# ---------------- SOLVER MOUSE ---------------- #
+solver_mouse = turtle.Turtle()
+solver_mouse.shape("circle")
+solver_mouse.color("red")
+solver_mouse.penup()
+solver_mouse.speed(0)
         
 
 
