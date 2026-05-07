@@ -179,6 +179,88 @@ solver_mouse.shape("circle")
 solver_mouse.color("red")
 solver_mouse.penup()
 solver_mouse.speed(0)
+# ---------------- CAN MOVE ---------------- #
+def can_move(r, c, direction):
+
+    if direction == "N":
+        return r > 0 and northWall[r][c] == 0
+
+    elif direction == "S":
+        return r < ROWS - 1 and northWall[r + 1][c] == 0
+
+    elif direction == "E":
+        return c < COLS - 1 and eastWall[r][c] == 0
+
+    elif direction == "W":
+        return c > 0 and eastWall[r][c - 1] == 0
+
+    return False
+
+
+# ---------------- SOLVE MAZE ---------------- #
+def solve_maze(start, end):
+
+    sr, sc = start
+    er, ec = end
+
+    stack = [(sr, sc)]
+
+    visited_solver = set()
+    visited_solver.add((sr, sc))
+
+    while stack:
+
+        r, c = stack[-1]
+
+        x, y = cell_to_screen(r, c)
+
+        solver_mouse.goto(
+            x + CELL_SIZE / 2,
+            y - CELL_SIZE / 2
+        )
+
+        wn.update()
+        time.sleep(0.03)
+
+        if (r, c) == (er, ec):
+            print("Maze Solved!")
+            return
+
+        moves = []
+
+        directions = ["N", "S", "E", "W"]
+        random.shuffle(directions)
+
+        for d in directions:
+
+            if can_move(r, c, d):
+
+                nr, nc = r, c
+
+                if d == "N":
+                    nr -= 1
+
+                elif d == "S":
+                    nr += 1
+
+                elif d == "E":
+                    nc += 1
+
+                elif d == "W":
+                    nc -= 1
+
+                if (nr, nc) not in visited_solver:
+                    moves.append((nr, nc))
+
+        if moves:
+
+            next_cell = random.choice(moves)
+
+            visited_solver.add(next_cell)
+            stack.append(next_cell)
+
+        else:
+            stack.pop()
         
 
 
