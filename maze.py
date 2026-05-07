@@ -16,7 +16,7 @@ wall_t.speed(0)
 wall_t.color("white")
 wall_t.penup()
 
-turtle.done()
+
 # ---------------- CONFIG ---------------- #
 ROWS = 20
 COLS = 25
@@ -160,6 +160,19 @@ def generate_maze():
 
         else:
             stack.pop()
+            generate_maze()
 
-        generate_maze()
-        time.sleep(0.01)
+# ---------------- START AND END ---------------- #
+start_row = random.randint(0, ROWS - 1)
+end_row = random.randint(0, ROWS - 1)
+
+eastWall[start_row][0] = 0
+eastWall[end_row][COLS - 1] = 0
+
+draw_maze()
+wn.update()
+
+turtle.done()
+        
+
+
