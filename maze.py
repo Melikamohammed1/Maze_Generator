@@ -207,7 +207,7 @@ def generate_maze():
         
         draw_maze()
         wn.update()
-        time.sleep(0.01)
+        time.sleep(0.001)
 
 # ---------------- CAN MOVE ---------------- #
 def can_move(r, c, direction):
@@ -249,7 +249,7 @@ def solve_maze(start, end):
         )
 
         wn.update()
-        time.sleep(0.03)
+        time.sleep(0.003)
 
         if (r, c) == (er, ec):
             print("Maze Solved!")
