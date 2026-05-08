@@ -2,10 +2,17 @@ import turtle
 import random
 import time
 
+# ---------------- CONFIG ---------------- #
+ROWS = 20
+COLS = 25
+CELL_SIZE = 24
+BONUS_MODE = True      # Create cycles (bonus feature)
+EXTRA_WALL_CHANCE = 20 # 1 in 20 chance
+
 # ---------------- SCREEN ---------------- #
 wn = turtle.Screen()
 wn.bgcolor("black")
-wn.title("Maze Generator")
+wn.title("Maze Generator and Solver (DFS + Backtracking)")
 wn.setup(1300, 700)
 wn.tracer(0)
 
@@ -17,10 +24,28 @@ wall_t.color("white")
 wall_t.penup()
 
 
-# ---------------- CONFIG ---------------- #
-ROWS = 20
-COLS = 25
-CELL_SIZE = 24
+# ---------------- GENERATOR MOUSE ---------------- #
+gen_mouse = turtle.Turtle()
+gen_mouse.shape("circle")
+gen_mouse.color("orange")
+gen_mouse.penup()
+gen_mouse.speed(0)
+
+# ---------------- SOLVER MOUSE ---------------- #
+solver_mouse = turtle.Turtle()
+solver_mouse.shape("circle")
+solver_mouse.color("red")
+solver_mouse.penup()
+solver_mouse.speed(0)
+
+ # ---------------- DEAD END MARKER ---------------- #
+dead_t = turtle.Turtle()
+dead_t.shape("square")
+dead_t.color("blue")
+dead_t.penup()
+dead_t.speed(0)
+dead_t.shapesize(0.6)
+        
 
 # ---------------- DATA ---------------- #
 northWall = [[1] * COLS for _ in range(ROWS)]
@@ -86,12 +111,7 @@ def draw_maze():
             x,
             y - CELL_SIZE
         )
-        # ---------------- GENERATOR MOUSE ---------------- #
-gen_mouse = turtle.Turtle()
-gen_mouse.shape("circle")
-gen_mouse.color("orange")
-gen_mouse.penup()
-gen_mouse.speed(0)
+        
 # ---------------- REMOVE WALL ---------------- #
 def remove_wall(r, c, nr, nc, direction):
 
@@ -154,31 +174,41 @@ def generate_maze():
             nr, nc, direction = random.choice(neighbors)
 
             remove_wall(r, c, nr, nc, direction)
+            
+            # BONUS:
+            # Randomly remove extra walls to create cycles
+            if BONUS_MODE and random.randint(1, EXTRA_WALL_CHANCE) == 1:
+
+                extra_dirs = []
+
+                if r > 0:
+                    extra_dirs.append((r - 1, c, "N"))
+
+                if r < ROWS - 1:
+                    extra_dirs.append((r + 1, c, "S"))
+
+                if c > 0:
+                    extra_dirs.append((r, c - 1, "W"))
+
+                if c < COLS - 1:
+                    extra_dirs.append((r, c + 1, "E"))
+
+                er, ec, edir = random.choice(extra_dirs)
+
+                remove_wall(r, c, er, ec, edir)
+
 
             visited[nr][nc] = True
             stack.append((nr, nc))
 
         else:
             stack.pop()
-            generate_maze()
+           
+        
+        draw_maze()
+        wn.update()
+        time.sleep(0.01)
 
-# ---------------- START AND END ---------------- #
-start_row = random.randint(0, ROWS - 1)
-end_row = random.randint(0, ROWS - 1)
-
-eastWall[start_row][0] = 0
-eastWall[end_row][COLS - 1] = 0
-
-draw_maze()
-wn.update()
-
-turtle.done()
-# ---------------- SOLVER MOUSE ---------------- #
-solver_mouse = turtle.Turtle()
-solver_mouse.shape("circle")
-solver_mouse.color("red")
-solver_mouse.penup()
-solver_mouse.speed(0)
 # ---------------- CAN MOVE ---------------- #
 def can_move(r, c, direction):
 
@@ -195,7 +225,6 @@ def can_move(r, c, direction):
         return c > 0 and eastWall[r][c - 1] == 0
 
     return False
-
 
 # ---------------- SOLVE MAZE ---------------- #
 def solve_maze(start, end):
@@ -260,14 +289,41 @@ def solve_maze(start, end):
             stack.append(next_cell)
 
         else:
+            # Dead end -> mark blue
+            dead_t.goto(
+                x + CELL_SIZE / 2,
+                y - CELL_SIZE / 2
+            )
+            
             stack.pop()
-        # ---------------- DEAD END MARKER ---------------- #
-dead_t = turtle.Turtle()
-dead_t.shape("square")
-dead_t.color("blue")
-dead_t.penup()
-dead_t.speed(0)
-dead_t.shapesize(0.6)
-        
+       
+
+
+
+
+# ---------------- START AND END ---------------- #
+start_row = random.randint(0, ROWS - 1)
+end_row = random.randint(0, ROWS - 1)
+
+
+
+# RUN PROGRAM
+
+generate_maze()
+
+eastWall[start_row][0] = 0
+eastWall[end_row][COLS - 1] = 0
+
+draw_maze()
+wn.update()
+# Start and end cells
+start = (start_row, 0)
+end = (end_row, COLS - 1)
+
+# Solve maze
+solve_maze(start, end)
+
+turtle.done()
+
 
 
