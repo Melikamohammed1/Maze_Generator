@@ -1,4 +1,5 @@
-# https://www.loom.com/share/3e44975d62cd47f39cd1d94088b04520 This is my Loom link for the final result of the maze generator project.
+# https://www.loom.com/share/3e44975d62cd47f39cd1d94088b04520 
+This is my Loom link for the final result of the maze generator project.
 
 # Maze Generator & Solver (DFS+Backtracking)
 
